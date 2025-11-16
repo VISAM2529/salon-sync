@@ -8,9 +8,10 @@ export async function POST(req: Request) {
 
   const { salonId, planType } = await req.json();
 
-  const planId = planType === "pro" 
-    ? process.env.PLAN_PRO 
-    : process.env.PLAN_BASIC;
+  const planId = (planType === "pro" 
+  ? process.env.PLAN_PRO 
+  : process.env.PLAN_BASIC) as string;
+
 
   const subscription = await razorpay.subscriptions.create({
     plan_id: planId,

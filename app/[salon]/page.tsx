@@ -15,13 +15,16 @@ import {
 import Link from "next/link";
 
 export default async function SalonPublicPage({ params }: any) {
+  // ✅ FIX: unwrap params (Next.js 14 returns a Promise)
   const { salon } = await params;
 
   await dbConnect();
 
-  const salonDoc = await Salon.findOne({ slug: salon }).lean();
-  const services = await Service.find({ salonId: salonDoc?._id }).lean();
+  // Fetch salon
+ const salonDoc = (await Salon.findOne({ slug: salon }).lean()) as any;
 
+  console.log("SalonDoc:", salonDoc); 
+  // ❗ MUST check removal BEFORE using salonDoc._id
   if (!salonDoc) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -29,9 +32,11 @@ export default async function SalonPublicPage({ params }: any) {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Scissors className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">Salon Not Found</h1>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">
+            Salon Not Found
+          </h1>
           <p className="text-slate-600 mb-6">
-            The salon you're looking for doesn't exist or has been moved.
+            The salon you&apos;re looking for doesn&apos;t exist or has been moved.
           </p>
           <Link
             href="/"
@@ -44,6 +49,9 @@ export default async function SalonPublicPage({ params }: any) {
       </div>
     );
   }
+
+  // Fetch services safely
+  const services = await Service.find({ salonId: salonDoc._id }).lean();
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -88,7 +96,8 @@ export default async function SalonPublicPage({ params }: any) {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Features Bar */}
+        
+        {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <div className="bg-white rounded-xl p-6 border border-slate-200 text-center">
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -121,11 +130,13 @@ export default async function SalonPublicPage({ params }: any) {
           </div>
         </div>
 
-        {/* Services Section */}
+        {/* Services List */}
         <div className="mb-12">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-slate-900 mb-3">Our Services</h2>
-            <p className="text-slate-600">Choose from our range of professional services</p>
+            <p className="text-slate-600">
+              Choose from our range of professional services
+            </p>
           </div>
 
           {services.length === 0 ? (
@@ -147,12 +158,10 @@ export default async function SalonPublicPage({ params }: any) {
                   key={service._id.toString()}
                   className="bg-white rounded-xl border border-slate-200 p-6 hover:border-purple-300 hover:shadow-lg transition-all group"
                 >
-                  {/* Service Icon */}
                   <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
                     <Scissors className="w-7 h-7 text-purple-600" />
                   </div>
 
-                  {/* Service Details */}
                   <h3 className="text-xl font-bold text-slate-900 mb-3">
                     {service.name}
                   </h3>
@@ -178,14 +187,15 @@ export default async function SalonPublicPage({ params }: any) {
           )}
         </div>
 
-        {/* CTA Section */}
+        {/* CTA */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 md:p-12 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Book?</h2>
           <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
             Schedule your appointment now and skip the wait. Get the perfect look you deserve!
           </p>
+
           <Link
-            href={`/book`}
+            href={`/${salon}/book`}
             className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-purple-600 font-bold text-lg rounded-lg hover:bg-purple-50 transition-colors shadow-lg"
           >
             <Calendar className="w-6 h-6" />
@@ -194,7 +204,7 @@ export default async function SalonPublicPage({ params }: any) {
           </Link>
         </div>
 
-        {/* Additional Info */}
+        {/* Extra Info */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white rounded-xl border border-slate-200 p-6">
             <h3 className="font-semibold text-slate-900 mb-4 flex items-center">
@@ -204,15 +214,21 @@ export default async function SalonPublicPage({ params }: any) {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-600">Monday - Friday</span>
-                <span className="font-medium text-slate-900">9:00 AM - 8:00 PM</span>
+                <span className="font-medium text-slate-900">
+                  9:00 AM - 8:00 PM
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Saturday</span>
-                <span className="font-medium text-slate-900">9:00 AM - 9:00 PM</span>
+                <span className="font-medium text-slate-900">
+                  9:00 AM - 9:00 PM
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Sunday</span>
-                <span className="font-medium text-slate-900">10:00 AM - 6:00 PM</span>
+                <span className="font-medium text-slate-900">
+                  10:00 AM - 6:00 PM
+                </span>
               </div>
             </div>
           </div>
@@ -253,7 +269,10 @@ export default async function SalonPublicPage({ params }: any) {
           <div className="text-center text-sm text-slate-600">
             <p className="mb-2">
               Powered by{" "}
-              <Link href="/" className="font-semibold text-purple-600 hover:text-purple-700">
+              <Link
+                href="/"
+                className="font-semibold text-purple-600 hover:text-purple-700"
+              >
                 SalonSync
               </Link>
             </p>

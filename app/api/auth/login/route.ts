@@ -31,7 +31,11 @@ export async function POST(req: Request) {
   salon: await Salon.findOne({ ownerId: user._id })
 });
 
-  } catch (error) {
-    return NextResponse.json({ success: false, message: error.message });
-  }
+ } catch (error: any) {
+  return NextResponse.json({
+    success: false,
+    message: error.message || "Something went wrong",
+  });
+}
+
 }

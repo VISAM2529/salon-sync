@@ -18,7 +18,8 @@ export default async function QueuePage({ params }: any) {
 
   const { salon: slug } = await params;
 
-  const salon = await Salon.findOne({ slug }).lean();
+const salon = (await Salon.findOne({ slug }).lean()) as any;
+
   if (!salon) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
@@ -27,7 +28,7 @@ export default async function QueuePage({ params }: any) {
             <Users className="w-8 h-8 text-red-600" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 mb-2">Salon Not Found</h1>
-          <p className="text-slate-600">The salon you're looking for doesn't exist.</p>
+          <p className="text-slate-600">The salon you&apos;re looking for doesn&apos;t exist.</p>
         </div>
       </div>
     );

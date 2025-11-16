@@ -1,4 +1,14 @@
-export function bookingEmailHtml({ salonName, serviceName, customerName, date }) {
+export function bookingEmailHtml({
+  salonName,
+  serviceName,
+  customerName,
+  date,
+}: {
+  salonName: string;
+  serviceName: string;
+  customerName: string;
+  date: string;
+}) {
   return `
     <h2>Booking Confirmed</h2>
     <p>Hi ${customerName},</p>

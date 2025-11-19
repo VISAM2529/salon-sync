@@ -46,7 +46,7 @@ export default function LoginPage() {
             <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">S</span>
             </div>
-            <span className="text-2xl font-bold text-slate-900">SalonSync</span>
+            <span className="text-2xl font-bold text-slate-900">TrimSetGo</span>
           </Link>
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome back</h1>
           <p className="text-slate-600">Sign in to your account to continue</p>

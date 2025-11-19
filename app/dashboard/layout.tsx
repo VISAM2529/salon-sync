@@ -14,7 +14,8 @@ import {
   Menu,
   X,
   Bell,
-  Search
+  Search,
+  User
 } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -66,7 +67,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Services", href: "/dashboard/services", icon: Scissors },
     { name: "Queue", href: "/dashboard/queue", icon: Users },
     { name: "Bookings", href: "/dashboard/bookings", icon: Calendar },
-    { name: "Settings", href: "/dashboard/settings", icon: Settings },
+        { name: "Staff Management", href: "/dashboard/staff", icon: User },
+    { name: "Settings", href: "/dashboard/settings", icon: Settings }
+
   ];
 
   const handleLogout = () => {
@@ -108,7 +111,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">S</span>
               </div>
-              <span className="text-xl font-bold text-slate-900">SalonSync</span>
+              <span className="text-xl font-bold text-slate-900">TrimSetGo</span>
             </Link>
             <button 
               onClick={() => setSidebarOpen(false)}

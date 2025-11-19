@@ -48,7 +48,7 @@ export default function TestimonialsSection() {
             Loved by Salon Owners <span className="gradient-text">Across India</span>
           </h2>
           <p className="text-xl text-slate-600">
-            Join hundreds of successful salon owners who transformed their business with SalonSync.
+            Join hundreds of successful salon owners who transformed their business with TrimSetGo.
           </p>
         </div>
 
@@ -132,7 +132,7 @@ export default function TestimonialsSection() {
               <span className="text-3xl">💜</span>
               <div className="text-left">
                 <div className="font-bold text-slate-900">500+ Salons</div>
-                <div className="text-sm text-slate-600">Trust SalonSync</div>
+                <div className="text-sm text-slate-600">Trust TrimSetGo</div>
               </div>
             </div>
           </div>

@@ -107,7 +107,7 @@ export default function ScreenshotsSection() {
                     <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   </div>
                   <div className="flex-1 bg-slate-700 rounded px-3 py-1 text-slate-400 text-xs">
-                    salonsync.com/dashboard
+                    TrimSetGo.com/dashboard
                   </div>
                 </div>
                 

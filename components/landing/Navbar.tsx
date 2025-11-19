@@ -27,9 +27,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
+              <span className="text-white font-bold text-lg">T</span>
             </div>
-            <span className="text-xl font-bold text-slate-900">SalonSync</span>
+            <span className="text-xl font-bold text-slate-900">TrimSetGo</span>
           </Link>
 
           {/* Desktop menu */}
@@ -51,13 +51,13 @@ export default function Navbar() {
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Link 
-              href="/login" 
+              href="/" 
               className="text-slate-600 hover:text-slate-900 font-medium transition-colors"
             >
               Login
             </Link>
             <Link 
-              href="/register" 
+              href="/" 
               className="px-5 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
             >
               Get Started
@@ -97,13 +97,13 @@ export default function Navbar() {
               </Link>
               <div className="pt-3 border-t border-slate-200 space-y-3">
                 <Link 
-                  href="/login" 
+                  href="/" 
                   className="block text-center px-5 py-2 text-slate-600 hover:text-slate-900 font-medium"
                 >
                   Login
                 </Link>
                 <Link 
-                  href="/register" 
+                  href="/" 
                   className="block text-center px-5 py-2 bg-purple-600 text-white rounded-lg font-medium"
                 >
                   Get Started

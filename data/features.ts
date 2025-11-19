@@ -16,7 +16,7 @@ export const features = [
   {
     id: 3,
     title: 'Subdomain for Your Salon',
-    description: 'Get your own professional URL like royalspa.salonsync.com. Build your brand online.',
+    description: 'Get your own professional URL like royalspa.TrimSetGo.com. Build your brand online.',
     icon: '🌐',
     gradient: 'from-green-500 to-emerald-500',
   },

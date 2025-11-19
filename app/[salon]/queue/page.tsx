@@ -291,7 +291,7 @@ const salon = (await Salon.findOne({ slug }).lean()) as any;
           <p className="text-center text-sm text-slate-600">
             Powered by{" "}
             <Link href="/" className="font-semibold text-purple-600 hover:text-purple-700">
-              SalonSync
+              TrimSetGo
             </Link>
           </p>
         </div>

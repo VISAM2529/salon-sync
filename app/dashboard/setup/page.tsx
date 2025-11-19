@@ -68,7 +68,7 @@ export default function SalonSetupPage() {
             <Store className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-slate-900 mb-3">
-            Welcome to SalonSync! 🎉
+            Welcome to TrimSetGo! 🎉
           </h1>
           <p className="text-xl text-slate-600">
             Let's set up your salon in just a few steps

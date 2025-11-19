@@ -56,7 +56,7 @@ export default function FAQSection() {
             Frequently Asked <span className="gradient-text">Questions</span>
           </h2>
           <p className="text-xl text-slate-600">
-            Everything you need to know about SalonSync. Can&apos;t find what you&apos;re looking for? 
+            Everything you need to know about TrimSetGo. Can&apos;t find what you&apos;re looking for? 
             <a href="/contact" className="text-purple-600 hover:underline ml-1">Contact us</a>
           </p>
         </div>

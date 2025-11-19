@@ -1,18 +1,18 @@
 export const faqs = [
   {
     id: 1,
-    question: 'How does SalonSync work?',
-    answer: 'SalonSync provides you with a complete booking and queue management system. You get your own branded website where customers can book appointments, join the queue, and track their position in real-time. You manage everything from a simple dashboard.',
+    question: 'How does TrimSetGo work?',
+    answer: 'TrimSetGo provides you with a complete booking and queue management system. You get your own branded website where customers can book appointments, join the queue, and track their position in real-time. You manage everything from a simple dashboard.',
   },
   {
     id: 2,
     question: 'Do I need technical knowledge to set it up?',
-    answer: 'Not at all! SalonSync is designed for salon owners, not tech experts. Setup takes less than 10 minutes. We provide step-by-step guidance and our support team is always ready to help.',
+    answer: 'Not at all! TrimSetGo is designed for salon owners, not tech experts. Setup takes less than 10 minutes. We provide step-by-step guidance and our support team is always ready to help.',
   },
   {
     id: 3,
     question: 'Can customers book without downloading an app?',
-    answer: 'Yes! Your customers can book directly from their mobile browser. No app downloads required. They simply visit your custom SalonSync URL and book instantly.',
+    answer: 'Yes! Your customers can book directly from their mobile browser. No app downloads required. They simply visit your custom TrimSetGo URL and book instantly.',
   },
   {
     id: 4,

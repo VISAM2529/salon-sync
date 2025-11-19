@@ -6,7 +6,7 @@ export const testimonials = [
     location: 'Mumbai',
     image: '/testimonials/avatar-1.jpg',
     rating: 5,
-    text: 'SalonSync completely transformed how we handle customers. Our waiting chaos is gone, and customers love checking the queue from home. Phone calls reduced by 70%!',
+    text: 'TrimSetGo completely transformed how we handle customers. Our waiting chaos is gone, and customers love checking the queue from home. Phone calls reduced by 70%!',
   },
   {
     id: 2,
@@ -24,6 +24,6 @@ export const testimonials = [
     location: 'Delhi',
     image: '/testimonials/avatar-3.jpg',
     rating: 5,
-    text: 'We were skeptical at first, but SalonSync proved us wrong. Setup was incredibly easy, and now we manage 50+ daily bookings effortlessly. Highly recommended!',
+    text: 'We were skeptical at first, but TrimSetGo proved us wrong. Setup was incredibly easy, and now we manage 50+ daily bookings effortlessly. Highly recommended!',
   },
 ];

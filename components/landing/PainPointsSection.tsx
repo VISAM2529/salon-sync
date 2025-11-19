@@ -98,7 +98,7 @@ export default function PainPointsSection() {
           <div className="inline-flex items-center space-x-2 bg-purple-50 px-6 py-3 rounded-lg border border-purple-100">
             <span className="text-lg">✨</span>
             <span className="text-purple-900 font-semibold">
-              SalonSync solves all these problems automatically
+              TrimSetGo solves all these problems automatically
             </span>
             <span className="text-lg">✨</span>
           </div>

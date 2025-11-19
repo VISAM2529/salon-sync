@@ -42,7 +42,7 @@ export default function ValuePropositionSection() {
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
         }`}>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Why Choose SalonSync?
+            Why Choose TrimSetGo?
           </h2>
           <p className="text-xl text-purple-100">
             We&apos;ve thought of everything to make your salon management effortless and efficient.

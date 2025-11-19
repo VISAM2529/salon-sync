@@ -5,7 +5,7 @@ import { AuthProvider } from '@/context/AuthContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'SalonSync - Smart Salon Management System',
+  title: 'TrimSetGo - Smart Salon Management System',
   description: 'The smart way to manage your salon. No calls. No waiting. Just smooth bookings. A complete queue & booking automation system for salons & spas.',
   keywords: 'salon management, booking system, queue management, salon software, spa management',
 };

@@ -21,7 +21,7 @@ export default function Footer() {
               <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-xl">S</span>
               </div>
-              <span className="text-2xl font-bold text-white">SalonSync</span>
+              <span className="text-2xl font-bold text-white">TrimSetGo</span>
             </div>
             <p className="text-slate-400 mb-6 leading-relaxed">
               The smart way to manage your salon. Streamline bookings, reduce calls, and delight customers.
@@ -88,7 +88,7 @@ export default function Footer() {
         <div className="pt-8 border-t border-slate-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-slate-400 text-sm">
-              © {currentYear} SalonSync. All rights reserved.
+              © {currentYear} TrimSetGo. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 text-sm">
               <Link href="/privacy" className="hover:text-purple-400 transition-colors">Privacy</Link>

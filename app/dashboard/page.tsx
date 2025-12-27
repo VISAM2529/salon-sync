@@ -3,10 +3,10 @@
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { 
-  Calendar, 
-  Users, 
-  Scissors, 
+import {
+  Calendar,
+  Users,
+  Scissors,
   TrendingUp,
   Clock,
   CheckCircle,
@@ -23,20 +23,34 @@ export default function DashboardHome() {
     totalServices: 0,
     monthlyRevenue: 0,
   });
+  const [activities, setActivities] = useState<any[]>([]);
+  const [schedule, setSchedule] = useState<any[]>([]);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     const saved = localStorage.getItem("salon");
     if (saved) {
-      setSalon(JSON.parse(saved));
-      // TODO: Fetch real stats from API
-      setStats({
-        todayBookings: 12,
-        activeQueue: 5,
-        totalServices: 8,
-        monthlyRevenue: 45000,
-      });
+      const salonData = JSON.parse(saved);
+      setSalon(salonData);
+      loadDashboardData(salonData._id);
     }
   }, []);
+
+  async function loadDashboardData(salonId: string) {
+    try {
+      const res = await fetch(`/api/salon/dashboard/stats?salonId=${salonId}`);
+      const data = await res.json();
+      if (data.success) {
+        setStats(data.stats);
+        setActivities(data.recentActivity || []);
+        setSchedule(data.todaysSchedule || []);
+      }
+    } catch (err) {
+      console.error("Dashboard data load error:", err);
+    } finally {
+      setLoadingStats(false);
+    }
+  }
 
   if (!salon) {
     return (
@@ -55,15 +69,15 @@ export default function DashboardHome() {
       value: stats.todayBookings,
       icon: Calendar,
       color: "purple",
-      change: "+12%",
-      changeType: "positive",
+      change: "Today",
+      changeType: "neutral",
     },
     {
       name: "Active Queue",
       value: stats.activeQueue,
       icon: Users,
       color: "blue",
-      change: "5 waiting",
+      change: `${stats.activeQueue} waiting`,
       changeType: "neutral",
     },
     {
@@ -71,7 +85,7 @@ export default function DashboardHome() {
       value: stats.totalServices,
       icon: Scissors,
       color: "green",
-      change: "+2 this week",
+      change: "Active",
       changeType: "positive",
     },
     {
@@ -79,7 +93,7 @@ export default function DashboardHome() {
       value: `₹${stats.monthlyRevenue.toLocaleString()}`,
       icon: TrendingUp,
       color: "orange",
-      change: "+18%",
+      change: "This Month",
       changeType: "positive",
     },
   ];
@@ -89,12 +103,6 @@ export default function DashboardHome() {
     { name: "View Queue", href: "/dashboard/queue", icon: Users, color: "blue" },
     { name: "All Bookings", href: "/dashboard/bookings", icon: Calendar, color: "green" },
     { name: "Settings", href: "/dashboard/settings", icon: Clock, color: "orange" },
-  ];
-
-  const recentActivity = [
-    { id: 1, customer: "Rahul Kumar", service: "Haircut", status: "completed", time: "2 hours ago" },
-    { id: 2, customer: "Priya Sharma", service: "Hair Color", status: "in-progress", time: "Just now" },
-    { id: 3, customer: "Amit Patel", service: "Beard Trim", status: "pending", time: "5 min ago" },
   ];
 
   return (
@@ -120,15 +128,18 @@ export default function DashboardHome() {
               <div className={`w-12 h-12 bg-${stat.color}-100 rounded-lg flex items-center justify-center`}>
                 <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
               </div>
-              <span className={`text-sm font-medium ${
-                stat.changeType === 'positive' ? 'text-green-600' : 
-                stat.changeType === 'negative' ? 'text-red-600' : 
-                'text-slate-600'
-              }`}>
-                {stat.change}
+              <span className={`text-sm font-medium ${stat.changeType === 'positive' ? 'text-green-600' :
+                stat.changeType === 'negative' ? 'text-red-600' :
+                  'text-slate-600'
+                }`}>
+                {loadingStats ? '...' : stat.change}
               </span>
             </div>
-            <h3 className="text-2xl font-bold text-slate-900">{stat.value}</h3>
+            <h3 className="text-2xl font-bold text-slate-900">
+              {loadingStats ? (
+                <div className="h-8 w-16 bg-slate-100 animate-pulse rounded"></div>
+              ) : stat.value}
+            </h3>
             <p className="text-sm text-slate-600 mt-1">{stat.name}</p>
           </div>
         ))}
@@ -163,36 +174,42 @@ export default function DashboardHome() {
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900 mb-4">Recent Activity</h2>
           <div className="space-y-4">
-            {recentActivity.map((activity) => (
-              <div key={activity.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                    <span className="text-purple-700 font-semibold text-sm">
-                      {activity.customer.charAt(0)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-900">{activity.customer}</p>
-                    <p className="text-sm text-slate-600">{activity.service}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                    activity.status === 'completed' ? 'bg-green-100 text-green-700' :
-                    activity.status === 'in-progress' ? 'bg-blue-100 text-blue-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {activity.status === 'completed' && <CheckCircle className="w-3 h-3 mr-1" />}
-                    {activity.status === 'in-progress' && <Clock className="w-3 h-3 mr-1" />}
-                    {activity.status === 'pending' && <XCircle className="w-3 h-3 mr-1" />}
-                    {activity.status}
-                  </span>
-                  <p className="text-xs text-slate-500 mt-1">{activity.time}</p>
-                </div>
+            {activities.length === 0 ? (
+              <div className="p-8 text-center bg-slate-50 rounded-lg text-slate-500">
+                No recent activity
               </div>
-            ))}
+            ) : (
+              activities.map((activity) => (
+                <div key={activity._id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span className="text-purple-700 font-semibold text-sm">
+                        {activity.customerName?.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">{activity.customerName}</p>
+                      <p className="text-sm text-slate-600">
+                        {activity.serviceIds?.map((s: any) => s.name).join(", ") || "No services"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${activity.status === 'completed' ? 'bg-green-100 text-green-700' :
+                      'bg-blue-100 text-blue-700'
+                      }`}>
+                      {activity.status === 'completed' ? <CheckCircle className="w-3 h-3 mr-1" /> : <Clock className="w-3 h-3 mr-1" />}
+                      {activity.status}
+                    </span>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {new Date(activity.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-          <Link 
+          <Link
             href="/dashboard/bookings"
             className="mt-4 block text-center py-2 text-purple-600 hover:text-purple-700 font-medium text-sm"
           >
@@ -204,24 +221,29 @@ export default function DashboardHome() {
         <div className="bg-white rounded-xl border border-slate-200 p-6">
           <h2 className="text-xl font-bold text-slate-900 mb-4">Today's Schedule</h2>
           <div className="space-y-3">
-            {[
-              { time: "10:00 AM", customer: "Sarah Johnson", service: "Hair Styling" },
-              { time: "11:30 AM", customer: "Mike Chen", service: "Haircut" },
-              { time: "02:00 PM", customer: "Emma Davis", service: "Color Treatment" },
-              { time: "03:30 PM", customer: "James Wilson", service: "Beard Trim" },
-            ].map((appointment, index) => (
-              <div key={index} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-slate-50">
-                <div className="w-16 flex-shrink-0">
-                  <span className="text-sm font-semibold text-purple-600">{appointment.time}</span>
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-slate-900">{appointment.customer}</p>
-                  <p className="text-sm text-slate-600">{appointment.service}</p>
-                </div>
+            {schedule.length === 0 ? (
+              <div className="p-8 text-center bg-slate-50 rounded-lg text-slate-500">
+                No bookings scheduled for today
               </div>
-            ))}
+            ) : (
+              schedule.map((appointment, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-slate-50">
+                  <div className="w-20 flex-shrink-0">
+                    <span className="text-sm font-semibold text-purple-600">
+                      {new Date(appointment.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-slate-900">{appointment.customerName}</p>
+                    <p className="text-sm text-slate-600">
+                      {appointment.serviceIds?.map((s: any) => s.name).join(", ")} | ₹{appointment.totalPrice}
+                    </p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-          <Link 
+          <Link
             href="/dashboard/bookings"
             className="mt-4 block text-center py-2 text-purple-600 hover:text-purple-700 font-medium text-sm"
           >

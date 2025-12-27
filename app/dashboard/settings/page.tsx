@@ -2,20 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { loadRazorpay } from "@/utils/loadRazorpay";
-import { 
-  Settings as SettingsIcon, 
-  Store, 
-  Link as LinkIcon, 
-  CreditCard, 
-  Check, 
+import {
+  Settings as SettingsIcon,
+  Store,
+  Link as LinkIcon,
+  CreditCard,
+  Check,
   Crown,
   Zap,
   Shield,
-  Users,
-  Calendar,
+  Globe,
+  Image as ImageIcon,
+  Upload,
+  Trash2,
+  Loader2,
   Bell,
-  Palette,
-  Globe
+  Palette
 } from "lucide-react";
 import Link from "next/link";
 
@@ -26,12 +28,17 @@ interface Salon {
   email?: string;
   phone?: string;
   address?: string;
+  mainImage?: string;
 }
 
 export default function SettingsPage() {
   const [salon, setSalon] = useState<Salon | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'general' | 'subscription'>('general');
+  const [uploading, setUploading] = useState(false);
+
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
   useEffect(() => {
     const saved = localStorage.getItem("salon");
@@ -40,7 +47,7 @@ export default function SettingsPage() {
 
   async function startSubscription(type: 'basic' | 'pro') {
     if (!salon) return;
-    
+
     setLoading(true);
     try {
       const res = await fetch("/api/payments/subscribe", {
@@ -89,6 +96,74 @@ export default function SettingsPage() {
       alert("An error occurred. Please try again.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !salon) return;
+
+    setUploading(true);
+    try {
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("upload_preset", uploadPreset!);
+
+      const res = await fetch(url, { method: "POST", body: fd });
+      const data = await res.json();
+      const imageUrl = data.secure_url;
+
+      // Update salon profile
+      const updateRes = await fetch("/api/salon/update-profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salonId: salon._id,
+          updates: { mainImage: imageUrl }
+        }),
+      });
+
+      const updateData = await updateRes.json();
+      if (updateData.success) {
+        const updatedSalon = { ...salon, mainImage: imageUrl };
+        setSalon(updatedSalon);
+        localStorage.setItem("salon", JSON.stringify(updatedSalon));
+        alert("Salon image updated successfully!");
+      }
+
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload image");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleRemoveImage() {
+    if (!salon || !confirm("Remove salon image?")) return;
+
+    setUploading(true);
+    try {
+      const updateRes = await fetch("/api/salon/update-profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          salonId: salon._id,
+          updates: { mainImage: "" }
+        }),
+      });
+
+      const updateData = await updateRes.json();
+      if (updateData.success) {
+        const updatedSalon = { ...salon, mainImage: "" };
+        setSalon(updatedSalon);
+        localStorage.setItem("salon", JSON.stringify(updatedSalon));
+      }
+    } catch (error) {
+      console.error("Remove error:", error);
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -154,11 +229,10 @@ export default function SettingsPage() {
         <nav className="flex space-x-8">
           <button
             onClick={() => setActiveTab('general')}
-            className={`pb-4 px-1 border-b-2 font-medium transition-colors ${
-              activeTab === 'general'
-                ? 'border-purple-600 text-purple-600'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
-            }`}
+            className={`pb-4 px-1 border-b-2 font-medium transition-colors ${activeTab === 'general'
+              ? 'border-purple-600 text-purple-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+              }`}
           >
             <div className="flex items-center space-x-2">
               <Store className="w-5 h-5" />
@@ -167,11 +241,10 @@ export default function SettingsPage() {
           </button>
           <button
             onClick={() => setActiveTab('subscription')}
-            className={`pb-4 px-1 border-b-2 font-medium transition-colors ${
-              activeTab === 'subscription'
-                ? 'border-purple-600 text-purple-600'
-                : 'border-transparent text-slate-600 hover:text-slate-900'
-            }`}
+            className={`pb-4 px-1 border-b-2 font-medium transition-colors ${activeTab === 'subscription'
+              ? 'border-purple-600 text-purple-600'
+              : 'border-transparent text-slate-600 hover:text-slate-900'
+              }`}
           >
             <div className="flex items-center space-x-2">
               <CreditCard className="w-5 h-5" />
@@ -214,7 +287,69 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Public Site Link */}
+          {/* Salon Image */}
+          <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <ImageIcon className="w-5 h-5 text-blue-600" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900">Salon Image</h2>
+            </div>
+
+            <div className="flex flex-col md:flex-row items-start gap-8">
+              <div className="relative group">
+                <div className="w-64 h-48 rounded-2xl overflow-hidden bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center">
+                  {salon.mainImage ? (
+                    <img
+                      src={salon.mainImage}
+                      alt="Salon"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-center p-4">
+                      <ImageIcon className="w-10 h-10 text-slate-400 mx-auto mb-2" />
+                      <p className="text-xs text-slate-500">No image uploaded</p>
+                    </div>
+                  )}
+                  {uploading && (
+                    <div className="absolute inset-0 bg-white/60 backdrop-blur-sm flex items-center justify-center rounded-2xl">
+                      <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+                    </div>
+                  )}
+                </div>
+                {salon.mainImage && (
+                  <button
+                    onClick={handleRemoveImage}
+                    className="absolute -top-2 -right-2 bg-white p-2 rounded-full shadow-lg border border-slate-200 text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h3 className="font-semibold text-slate-900 mb-1">Upload Salon Photo</h3>
+                  <p className="text-sm text-slate-600">
+                    This image will be featured at the top of your public booking page.
+                    Recommended size: 1200x800px.
+                  </p>
+                </div>
+
+                <label className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-colors cursor-pointer disabled:opacity-50">
+                  <Upload className="w-5 h-5 mr-2" />
+                  <span>{uploading ? 'Uploading...' : 'Choose Image'}</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
           <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
             <div className="flex items-start space-x-3">
               <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -299,11 +434,10 @@ export default function SettingsPage() {
             {plans.map((plan) => (
               <div
                 key={plan.type}
-                className={`relative bg-white rounded-xl border-2 p-8 ${
-                  plan.popular
-                    ? 'border-purple-300 shadow-lg'
-                    : 'border-slate-200'
-                }`}
+                className={`relative bg-white rounded-xl border-2 p-8 ${plan.popular
+                  ? 'border-purple-300 shadow-lg'
+                  : 'border-slate-200'
+                  }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
@@ -329,11 +463,10 @@ export default function SettingsPage() {
                   <button
                     onClick={() => startSubscription(plan.type)}
                     disabled={loading}
-                    className={`w-full py-4 rounded-lg font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                      plan.popular
-                        ? 'bg-purple-600 text-white hover:bg-purple-700'
-                        : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
-                    }`}
+                    className={`w-full py-4 rounded-lg font-semibold text-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${plan.popular
+                      ? 'bg-purple-600 text-white hover:bg-purple-700'
+                      : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+                      }`}
                   >
                     {loading ? 'Processing...' : 'Subscribe Now'}
                   </button>

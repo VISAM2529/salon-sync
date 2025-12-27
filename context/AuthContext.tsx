@@ -22,18 +22,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-const login = (user: any, token: string, salon: any) => {
+  const login = (user: any, token: string, salon: any) => {
 
     console.log("Logging in user:", user);
-  localStorage.setItem("token", token);
-  localStorage.setItem("user", JSON.stringify(user));
-  if (salon) {
-    localStorage.setItem("salon", JSON.stringify(salon));
-  }
-  setUser(user);
-  setToken(token);
-  router.push("/dashboard");
-};
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    if (salon) {
+      localStorage.setItem("salon", JSON.stringify(salon));
+    }
+    setUser(user);
+    setToken(token);
+
+    if (user.role === "super_admin") {
+      router.push("/super-admin-dashboard");
+    } else if (user.role === "supplier") {
+      router.push("/supplier-dashboard");
+    } else {
+      router.push("/dashboard");
+    }
+  };
 
 
   const logout = () => {

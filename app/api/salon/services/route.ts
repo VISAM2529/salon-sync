@@ -5,13 +5,15 @@ import Service from "@/models/Service";
 export async function POST(req: Request) {
   await dbConnect();
 
-  const { salonId, name, duration, price } = await req.json();
+  const { salonId, name, duration, price ,description,image} = await req.json();
 
   const service = await Service.create({
     salonId,
     name,
     duration,
     price,
+    description,
+    image
   });
 
   return NextResponse.json({ success: true, service });

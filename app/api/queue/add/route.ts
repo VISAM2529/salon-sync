@@ -7,23 +7,29 @@ import { sendSMS, sendEmail } from "@/lib/notifications";
 
 export async function POST(req: Request) {
   await dbConnect();
-  const { salonId, customerName, serviceId, customerPhone } = await req.json();
+  const { salonId, customerName, serviceId, serviceIds, customerPhone } = await req.json();
 
-  const count = await Queue.countDocuments({ salonId });
+  const finalServiceIds = serviceIds || (serviceId ? [serviceId] : []);
+
+  const count = await Queue.countDocuments({ salonId, status: { $ne: "serving" } });
   const position = count + 1;
 
   const item = await Queue.create({
     salonId,
     customerName,
-    serviceId,
+    customerPhone,
+    serviceIds: finalServiceIds,
+    serviceId: finalServiceIds[0], // Keep for compatibility
     position,
   });
 
-  // Fetch salon and service
-  const [salon, service] = await Promise.all([
+  // Fetch salon and services
+  const [salon, services] = await Promise.all([
     Salon.findById(salonId),
-    Service.findById(serviceId),
+    Service.find({ _id: { $in: finalServiceIds } }),
   ]);
+
+  const serviceNames = services.map(s => s.name).join(", ");
 
   // Notify customer via SMS
   if (customerPhone) {
@@ -42,7 +48,7 @@ export async function POST(req: Request) {
       await sendEmail({
         to: owner.email,
         subject: `New queue - ${customerName}`,
-        html: `<p>${customerName} added to queue (pos ${position}) for ${service?.name}</p>`,
+        html: `<p>${customerName} added to queue (pos ${position}) for ${serviceNames}</p>`,
       });
     } catch (err) {
       console.error("Email error:", err);

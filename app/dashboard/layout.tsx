@@ -4,18 +4,27 @@ import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { 
-  LayoutDashboard, 
-  Scissors, 
-  Users, 
-  Calendar, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Scissors,
+  Users,
+  Calendar,
+  Settings,
   LogOut,
   Menu,
   X,
   Bell,
   Search,
-  User
+  User,
+  Image as ImageIcon,
+  Tag,
+  TrendingUp,
+  Package,
+  Heart,
+  ShoppingBag,
+  Megaphone,
+  CreditCard,
+  MessageCircle
 } from "lucide-react";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -51,7 +60,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       // Check subscription
       const res = await fetch(`/api/subscription/status?salonId=${salonData._id}`);
       const data = await res.json();
-      
+
       if (!data.active) {
         router.push("/dashboard/no-access");
       } else {
@@ -66,10 +75,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Services", href: "/dashboard/services", icon: Scissors },
     { name: "Queue", href: "/dashboard/queue", icon: Users },
+    { name: "Daily Collection", href: "/dashboard/collections", icon: TrendingUp },
+    { name: "Inventory", href: "/dashboard/inventory", icon: Package },
+    { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingBag },
+    { name: "Marketing", href: "/dashboard/marketing", icon: Megaphone },
+    { name: "Memberships", href: "/dashboard/memberships", icon: CreditCard },
+    { name: "Feedback", href: "/dashboard/feedback", icon: MessageCircle },
+    { name: "Clients", href: "/dashboard/clients", icon: Heart },
     { name: "Bookings", href: "/dashboard/bookings", icon: Calendar },
-        { name: "Staff Management", href: "/dashboard/staff", icon: User },
+    { name: "Staff Management", href: "/dashboard/staff", icon: User },
+    { name: "Gallery", href: "/dashboard/gallery", icon: ImageIcon },
+    { name: "Offers", href: "/dashboard/offers", icon: Tag },
     { name: "Settings", href: "/dashboard/settings", icon: Settings }
-
   ];
 
   const handleLogout = () => {
@@ -92,7 +109,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-slate-50">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900 bg-opacity-50 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
@@ -113,7 +130,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
               <span className="text-xl font-bold text-slate-900">TrimSetGo</span>
             </Link>
-            <button 
+            <button
               onClick={() => setSidebarOpen(false)}
               className="lg:hidden p-1 rounded-lg hover:bg-slate-100"
             >
@@ -139,8 +156,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   className={`
                     flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors
-                    ${isActive 
-                      ? 'bg-purple-50 text-purple-700' 
+                    ${isActive
+                      ? 'bg-purple-50 text-purple-700'
                       : 'text-slate-700 hover:bg-slate-100'
                     }
                   `}

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
       success: true,
       message: "Image added to gallery",
     });
-  } catch (err) {
-    return NextResponse.json({ success: false, error: err.message });
+  } catch (err: any) {
+    return NextResponse.json({ success: false, error: err.message || "An error occurred" });
   }
 }

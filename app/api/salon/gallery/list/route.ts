@@ -25,9 +25,11 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    const salonData = salon as any;
+
     return NextResponse.json({
       success: true,
-      gallery: salon.gallery || [],
+      gallery: salonData.gallery || [],
     });
   } catch (error: any) {
     console.error("Gallery List Error:", error);

@@ -19,7 +19,7 @@ export async function PUT(req: Request) {
       success: true,
       salon: newSalon,
     });
-  } catch (err) {
-    return NextResponse.json({ success: false, error: err.message });
+  } catch (err: any) {
+    return NextResponse.json({ success: false, error: err.message || "An error occurred" });
   }
 }

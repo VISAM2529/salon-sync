@@ -9,11 +9,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, message: "Contact message received. We'll get back to you shortly." });
   } catch (error: any) {
     return NextResponse.json({ success: false, message: error.message });
-  } 
+  }
 }
 
 
-export async function PUT(req) {
+export async function PUT(req: Request) {
   await dbConnect();
   const { salonId, updates } = await req.json();
 

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const queueSchema = new mongoose.Schema({
   salonId: { type: mongoose.Schema.Types.ObjectId, ref: "Salon", required: true },
   customerName: { type: String, required: true },
+  customerPhone: { type: String },
 
   // MULTIPLE SERVICES
   serviceIds: [
@@ -13,10 +14,14 @@ const queueSchema = new mongoose.Schema({
   serviceId: { type: mongoose.Schema.Types.ObjectId, ref: "Service" },
 
   position: { type: Number, required: true },
-
+  status: {
+    type: String,
+    enum: ["waiting", "serving"],
+    default: "waiting"
+  },
   estimatedMinutes: { type: Number }, // NEW
 
-  bookingId: { type: mongoose.Schema.Types.ObjectId, ref: "Booking" },
+  staffId: { type: mongoose.Schema.Types.ObjectId, ref: "Staff" },
 
   createdAt: { type: Date, default: Date.now }
 });

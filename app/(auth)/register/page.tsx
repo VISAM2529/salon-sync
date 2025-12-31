@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
-import { Mail, Lock, User, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
+import { Mail, Lock, User, ArrowRight, Loader2, CheckCircle2, Truck } from "lucide-react";
 
 export default function RegisterPage() {
   const { login } = useAuth();
@@ -11,6 +11,7 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("salon_owner");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,7 +25,7 @@ export default function RegisterPage() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, role }),
     });
 
     const data = await res.json();
@@ -57,6 +58,30 @@ export default function RegisterPage() {
         {/* Registration Form */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
           <form onSubmit={handleRegister} className="space-y-6">
+            {/* Role Selection */}
+            <div className="flex gap-4 mb-6">
+              <button
+                type="button"
+                onClick={() => setRole("salon_owner")}
+                className={`flex-1 p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${role === 'salon_owner' ? 'border-purple-600 bg-purple-50 text-purple-600' : 'border-slate-100 hover:border-slate-200 text-slate-400'}`}
+              >
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${role === 'salon_owner' ? 'bg-purple-600 text-white' : 'bg-slate-100'}`}>
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-black uppercase tracking-widest leading-none">Salon Owner</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole("supplier")}
+                className={`flex-1 p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${role === 'supplier' ? 'border-blue-600 bg-blue-50 text-blue-600' : 'border-slate-100 hover:border-slate-200 text-slate-400'}`}
+              >
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${role === 'supplier' ? 'bg-blue-600 text-white' : 'bg-slate-100'}`}>
+                  <Truck className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-black uppercase tracking-widest leading-none">Supplier</span>
+              </button>
+            </div>
+
             {/* Error Message */}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
